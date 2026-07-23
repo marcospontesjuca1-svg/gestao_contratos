@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
+import { Timestamp } from 'firebase/firestore'
 import { buscarConfiguracoes, salvarConfiguracoes } from '../services/configuracoesService'
-import type { Configuracoes, FrequenciaBackup } from '../types/configuracoes'
+import { listarImoveis } from '../services/imoveisService'
+import { baixarBackupXlsx } from '../lib/backup'
+import { useAuth } from '../lib/auth'
+import type { Configuracoes } from '../types/configuracoes'
 
 export function ConfiguracoesPage() {
+  const { user, usuario } = useAuth()
   const [config, setConfig] = useState<Configuracoes | null>(null)
-  const [salvando, setSalvando] = useState(false)
-  const [salvo, setSalvo] = useState(false)
+  const [gerando, setGerando] = useState(false)
 
   useEffect(() => {
     buscarConfiguracoes().then(setConfig)
@@ -13,13 +17,18 @@ export function ConfiguracoesPage() {
 
   if (!config) return <p className="text-sm text-slate-400">Carregando…</p>
 
-  async function handleSalvar() {
-    if (!config) return
-    setSalvando(true)
-    setSalvo(false)
-    await salvarConfiguracoes(config)
-    setSalvando(false)
-    setSalvo(true)
+  async function handleBackup() {
+    if (!user) return
+    setGerando(true)
+    try {
+      const imoveis = await listarImoveis()
+      baixarBackupXlsx(imoveis)
+      const novaConfig: Configuracoes = { backupUltimoEm: Timestamp.now(), backupUltimoPor: usuario?.nome ?? user.email }
+      await salvarConfiguracoes(novaConfig)
+      setConfig(novaConfig)
+    } finally {
+      setGerando(false)
+    }
   }
 
   return (
@@ -29,44 +38,23 @@ export function ConfiguracoesPage() {
       <fieldset className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
         <legend className="px-1 text-sm font-semibold text-slate-900">Backup</legend>
 
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={config.backupAtivo} onChange={(e) => setConfig({ ...config, backupAtivo: e.target.checked })} />
-          Rotina de backup ativa
-        </label>
-
-        <label className="block space-y-1 text-sm">
-          <span className="text-xs uppercase tracking-wide text-slate-400">Frequência</span>
-          <select
-            className="input"
-            value={config.backupFrequencia}
-            onChange={(e) => setConfig({ ...config, backupFrequencia: e.target.value as FrequenciaBackup })}
-          >
-            <option value="DIARIO">Diário</option>
-            <option value="SEMANAL">Semanal</option>
-            <option value="MENSAL">Mensal</option>
-          </select>
-        </label>
-
-        <label className="block space-y-1 text-sm">
-          <span className="text-xs uppercase tracking-wide text-slate-400">Destino (bucket / URL)</span>
-          <input className="input" value={config.backupDestino ?? ''} onChange={(e) => setConfig({ ...config, backupDestino: e.target.value || null })} />
-        </label>
-
-        <p className="text-xs text-slate-400">
-          Última execução: {config.backupUltimaExecucao ? config.backupUltimaExecucao.toDate().toLocaleString('pt-BR') : 'nunca'}
+        <p className="text-sm text-slate-600">
+          Gera um arquivo Excel com todos os imóveis cadastrados e baixa direto para a pasta de Downloads do seu computador. Você decide
+          onde guardar o arquivo depois.
         </p>
-      </fieldset>
 
-      <div className="flex items-center gap-3">
         <button
-          onClick={handleSalvar}
-          disabled={salvando}
+          onClick={handleBackup}
+          disabled={gerando}
           className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
         >
-          {salvando ? 'Salvando…' : 'Salvar'}
+          {gerando ? 'Gerando arquivo…' : 'Baixar backup agora'}
         </button>
-        {salvo && <span className="text-sm text-emerald-700">Salvo com sucesso.</span>}
-      </div>
+
+        <p className="text-xs text-slate-400">
+          Último backup: {config.backupUltimoEm ? `${config.backupUltimoEm.toDate().toLocaleString('pt-BR')} por ${config.backupUltimoPor}` : 'nunca'}
+        </p>
+      </fieldset>
     </div>
   )
 }

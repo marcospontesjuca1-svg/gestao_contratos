@@ -5,10 +5,8 @@ import type { Configuracoes } from '../types/configuracoes'
 const REF = doc(db, 'configuracoes', 'geral')
 
 const PADRAO: Configuracoes = {
-  backupAtivo: false,
-  backupFrequencia: 'SEMANAL',
-  backupUltimaExecucao: null,
-  backupDestino: null,
+  backupUltimoEm: null,
+  backupUltimoPor: null,
 }
 
 export async function buscarConfiguracoes(): Promise<Configuracoes> {
