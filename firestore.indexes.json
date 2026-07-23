@@ -1,0 +1,30 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "imoveis",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estado", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "locacao.valorAluguel", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "imoveis",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "municipio", "order": "ASCENDING" },
+        { "fieldPath": "tipo", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "imoveis",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "locacao.valorAluguel", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

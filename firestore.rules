@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+
+    function perfilDoUsuario() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.perfil;
+    }
+
+    function ehAdmin() {
+      return autenticado()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        && perfilDoUsuario() == 'admin'
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.ativo == true;
+    }
+
+    function usuarioAtivo() {
+      return autenticado()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.ativo == true;
+    }
+
+    // imoveis: admin tem CRUD completo; operador (ativo) só leitura.
+    match /imoveis/{imovelId} {
+      allow read: if usuarioAtivo();
+      allow create, update, delete: if ehAdmin();
+    }
+
+    // usuarios: qualquer usuário ativo lê o próprio perfil; só admin lê/gerencia todos.
+    match /usuarios/{uid} {
+      allow read: if autenticado() && (request.auth.uid == uid || ehAdmin());
+      allow create, update, delete: if ehAdmin();
+    }
+
+    // configuracoes: leitura para usuários ativos, escrita só admin.
+    match /configuracoes/{docId} {
+      allow read: if usuarioAtivo();
+      allow write: if ehAdmin();
+    }
+
+    // importacoes: histórico de importações, restrito a admin.
+    match /importacoes/{importacaoId} {
+      allow read, write: if ehAdmin();
+    }
+  }
+}
