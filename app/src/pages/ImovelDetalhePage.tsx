@@ -35,14 +35,14 @@ export function ImovelDetalhePage() {
     if (!id) return
     if (!confirm('Excluir este imóvel? Esta ação não pode ser desfeita.')) return
     await removerImovel(id)
-    navigate('/')
+    navigate('/imoveis')
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <Link to="/" className="text-sm text-slate-500 hover:underline">
+          <Link to="/imoveis" className="text-sm text-slate-500 hover:underline">
             ← Voltar
           </Link>
           <h2 className="text-xl font-semibold text-slate-900">{imovel.endereco}</h2>

@@ -3,6 +3,7 @@ import { AuthProvider } from './lib/auth'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Layout } from './components/Layout'
 import { LoginPage } from './pages/LoginPage'
+import { DashboardPage } from './pages/DashboardPage'
 import { ImoveisListPage } from './pages/ImoveisListPage'
 import { ImovelDetalhePage } from './pages/ImovelDetalhePage'
 import { ImovelFormPage } from './pages/ImovelFormPage'
@@ -23,7 +24,8 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/" element={<ImoveisListPage />} />
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/imoveis" element={<ImoveisListPage />} />
             <Route path="/imoveis/:id" element={<ImovelDetalhePage />} />
             <Route
               path="/imoveis/novo"

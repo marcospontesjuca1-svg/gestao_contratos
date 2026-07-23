@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { Logo } from './Logo'
 
 const linkClasse = ({ isActive }: { isActive: boolean }) =>
   `block rounded-md px-3 py-2 text-sm font-medium ${
@@ -13,9 +14,13 @@ export function Layout() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <aside className="w-60 shrink-0 border-r border-slate-200 bg-white p-4">
-        <h1 className="mb-6 text-lg font-semibold text-slate-900">Gestão de Ativos</h1>
+        <Logo className="mb-6" />
+        <p className="mb-4 text-xs font-medium uppercase tracking-wide text-slate-400">Gestão de Ativos</p>
         <nav className="space-y-1">
           <NavLink to="/" end className={linkClasse}>
+            Painel Gerencial
+          </NavLink>
+          <NavLink to="/imoveis" className={linkClasse}>
             Imóveis
           </NavLink>
           {isAdmin && (
