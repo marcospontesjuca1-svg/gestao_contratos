@@ -1,5 +1,8 @@
 import * as XLSX from 'xlsx'
+import { Timestamp } from 'firebase/firestore'
 import type { Imovel } from '../types/imovel'
+import type { Usuario } from '../types/usuario'
+import type { Configuracoes } from '../types/configuracoes'
 
 function linhaDoImovel(imovel: Imovel) {
   return {
@@ -37,4 +40,34 @@ export function baixarBackupXlsx(imoveis: Imovel[]) {
 
   const dataHoje = new Date().toISOString().slice(0, 10)
   XLSX.writeFile(workbook, `backup-gestao-contratos-${dataHoje}.xlsx`)
+}
+
+function serializarTimestamps(valor: unknown): unknown {
+  if (valor instanceof Timestamp) return valor.toDate().toISOString()
+  if (Array.isArray(valor)) return valor.map(serializarTimestamps)
+  if (valor && typeof valor === 'object') {
+    return Object.fromEntries(Object.entries(valor).map(([chave, v]) => [chave, serializarTimestamps(v)]))
+  }
+  return valor
+}
+
+/** Gera um .json com o dump completo dos dados do sistema (imóveis, usuários e configurações) e dispara o download. */
+export function baixarBackupJson(dados: { imoveis: Imovel[]; usuarios: Usuario[]; configuracoes: Configuracoes }) {
+  const payload = {
+    geradoEm: new Date().toISOString(),
+    imoveis: serializarTimestamps(dados.imoveis),
+    usuarios: serializarTimestamps(dados.usuarios),
+    configuracoes: serializarTimestamps(dados.configuracoes),
+  }
+
+  const conteudo = JSON.stringify(payload, null, 2)
+  const blob = new Blob([conteudo], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `backup-gestao-contratos-${new Date().toISOString().slice(0, 10)}.json`
+  link.click()
+
+  URL.revokeObjectURL(url)
 }
