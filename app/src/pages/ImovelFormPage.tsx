@@ -103,6 +103,9 @@ export function ImovelFormPage() {
           <Campo label="Proprietário">
             <input className="input" value={form.proprietario ?? ''} onChange={(e) => set('proprietario', e.target.value || null)} />
           </Campo>
+          <Campo label="Nome fantasia">
+            <input className="input" value={form.nomeFantasia ?? ''} onChange={(e) => set('nomeFantasia', e.target.value || null)} />
+          </Campo>
         </Secao>
 
         <Secao titulo="Classificação">
@@ -161,8 +164,32 @@ export function ImovelFormPage() {
           <Campo label="KMZ / Google Earth (URL)" className="col-span-2">
             <input className="input" value={form.kmzUrl ?? ''} onChange={(e) => set('kmzUrl', e.target.value || null)} />
           </Campo>
-          <Campo label="Possui pasta física">
-            <input type="checkbox" checked={form.pastaFisica} onChange={(e) => set('pastaFisica', e.target.checked)} />
+          <Campo label="Pasta física">
+            <label className="flex items-center gap-2 pt-1.5 text-sm text-slate-700">
+              <input type="checkbox" checked={form.pastaFisica} onChange={(e) => set('pastaFisica', e.target.checked)} />
+              Existe pasta física com a documentação
+            </label>
+            <p className="text-xs text-slate-400">Marque se a matrícula, contrato, IPTU etc. desse imóvel estão arquivados fisicamente no escritório.</p>
+          </Campo>
+        </Secao>
+
+        <Secao titulo="Valores do ativo">
+          <Campo label="Valor contábil (R$)">
+            <input
+              type="number"
+              className="input"
+              value={form.valorContabil ?? ''}
+              onChange={(e) => set('valorContabil', e.target.value ? Number(e.target.value) : null)}
+            />
+          </Campo>
+          <Campo label="Valor de mercado do imóvel (R$)">
+            <input
+              type="number"
+              className="input"
+              value={form.valorMercadoImovel ?? ''}
+              onChange={(e) => set('valorMercadoImovel', e.target.value ? Number(e.target.value) : null)}
+            />
+            <p className="text-xs text-slate-400">Avaliação do imóvel inteiro — diferente do R$/m² de mercado da região, usado no comparativo.</p>
           </Campo>
         </Secao>
 
