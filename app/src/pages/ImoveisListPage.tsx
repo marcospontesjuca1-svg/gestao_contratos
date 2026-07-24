@@ -30,7 +30,7 @@ export function ImoveisListPage() {
           <p className="text-sm text-slate-500">{imoveis.length} de {todos.length} imóveis</p>
         </div>
         {perfil === 'admin' && (
-          <Link to="/imoveis/novo" className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">
+          <Link to="/imoveis/novo" className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700">
             + Novo imóvel
           </Link>
         )}

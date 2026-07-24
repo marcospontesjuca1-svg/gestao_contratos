@@ -62,7 +62,7 @@ export function ImovelDetalhePage() {
         )}
       </div>
 
-      <section className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-4 rounded-xl border border-slate-200 bg-white shadow-sm p-4 md:grid-cols-4">
         <Campo label="Estado" valor={imovel.estado} />
         <Campo label="Município" valor={imovel.municipio} />
         <Campo label="Bairro" valor={imovel.bairro} />
@@ -94,7 +94,7 @@ export function ImovelDetalhePage() {
       </section>
 
       {(imovel.status === 'LOCADO' || imovel.status === 'LOCADO_PARCIAL') && (
-        <section className="rounded-lg border border-slate-200 bg-white p-4">
+        <section className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
           <h3 className="mb-3 text-sm font-semibold text-slate-900">Locação vigente</h3>
           <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <Campo label="Locatário" valor={imovel.locacao.locatario} />
@@ -107,13 +107,13 @@ export function ImovelDetalhePage() {
         </section>
       )}
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
         <h3 className="mb-3 text-sm font-semibold text-slate-900">Comparativo de mercado (R$/m²)</h3>
         <ComparativoMercado valorM2Imovel={imovel.locacao.valorM2} comparativo={imovel.comparativoMercado} />
         {imovel.comparativoMercado.fonte && <p className="mt-2 text-xs text-slate-400">Fonte: {imovel.comparativoMercado.fonte}</p>}
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
         <h3 className="mb-3 text-sm font-semibold text-slate-900">Fotos e anexos</h3>
         {imovel.fotos.length === 0 && imovel.anexos.length === 0 ? (
           <p className="text-sm text-slate-400">Nenhuma foto ou anexo cadastrado.</p>

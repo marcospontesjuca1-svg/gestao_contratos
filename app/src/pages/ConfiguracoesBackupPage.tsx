@@ -50,7 +50,7 @@ export function ConfiguracoesBackupPage() {
 
   return (
     <div className="max-w-lg space-y-4">
-      <fieldset className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
+      <fieldset className="space-y-3 rounded-xl border border-slate-200 bg-white shadow-sm p-4">
         <legend className="px-1 text-sm font-semibold text-slate-900">Backup</legend>
 
         <p className="text-sm text-slate-600">
@@ -62,7 +62,7 @@ export function ConfiguracoesBackupPage() {
           <button
             onClick={handleBackupXlsx}
             disabled={gerando !== null}
-            className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
           >
             {gerando === 'xlsx' ? 'Gerando…' : 'Baixar backup (.xlsx)'}
           </button>

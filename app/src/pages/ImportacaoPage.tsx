@@ -68,7 +68,7 @@ export function ImportacaoPage() {
           <p className="text-sm text-slate-700">
             {nomeArquivo}: <strong>{linhas.length}</strong> linhas lidas, <strong>{comAvisos}</strong> com avisos (revisar após importar).
           </p>
-          <div className="max-h-96 overflow-auto rounded-lg border border-slate-200 bg-white">
+          <div className="max-h-96 overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-left text-xs">
               <thead className="sticky top-0 border-b border-slate-200 bg-slate-50 uppercase text-slate-500">
                 <tr>
@@ -95,7 +95,7 @@ export function ImportacaoPage() {
           <button
             onClick={handleImportar}
             disabled={processando}
-            className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
           >
             {processando ? 'Importando…' : `Confirmar importação de ${linhas.length} imóveis`}
           </button>

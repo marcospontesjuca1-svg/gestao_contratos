@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { Logo } from '../components/Logo'
 
 export function LoginPage() {
   const { user, login } = useAuth()
@@ -25,8 +26,9 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-red-50 px-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 rounded-xl border border-slate-200 bg-white p-8 shadow-lg">
+        <Logo />
         <div>
           <h1 className="text-lg font-semibold text-slate-900">Gestão de Ativos Imobiliários</h1>
           <p className="text-sm text-slate-500">Entre com sua conta para continuar.</p>
@@ -55,7 +57,7 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={enviando}
-          className="w-full rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+          className="w-full rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
         >
           {enviando ? 'Entrando…' : 'Entrar'}
         </button>

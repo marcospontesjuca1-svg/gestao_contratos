@@ -54,7 +54,7 @@ export function UsuariosPage() {
         </p>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-white">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
         {carregando ? (
           <p className="p-4 text-sm text-slate-400">Carregando…</p>
         ) : (
@@ -96,7 +96,7 @@ export function UsuariosPage() {
         )}
       </div>
 
-      <form onSubmit={handleCriar} className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
+      <form onSubmit={handleCriar} className="space-y-3 rounded-xl border border-slate-200 bg-white shadow-sm p-4">
         <h3 className="text-sm font-semibold text-slate-900">Criar novo usuário</h3>
         <p className="text-xs text-slate-500">Cria o login e o perfil de acesso de uma vez, direto por aqui.</p>
         <div className="grid grid-cols-2 gap-3">
@@ -117,7 +117,7 @@ export function UsuariosPage() {
           </select>
         </div>
         {erro && <p className="text-sm text-red-600">{erro}</p>}
-        <button type="submit" disabled={criando} className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50">
+        <button type="submit" disabled={criando} className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
           {criando ? 'Criando…' : 'Criar usuário'}
         </button>
       </form>

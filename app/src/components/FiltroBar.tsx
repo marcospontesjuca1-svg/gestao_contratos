@@ -14,7 +14,7 @@ export function FiltroBar({ filtros, onChange, opcoes }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-4 lg:grid-cols-7">
+    <div className="grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-white shadow-sm p-4 md:grid-cols-4 lg:grid-cols-7">
       <input
         className="col-span-2 rounded-md border border-slate-300 px-2 py-1.5 text-sm lg:col-span-2"
         placeholder="Buscar endereço, proprietário…"

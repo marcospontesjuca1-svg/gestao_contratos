@@ -22,11 +22,30 @@ function contarPor<T extends string>(imoveis: Imovel[], campo: (i: Imovel) => T)
   return contagem
 }
 
-function StatCard({ titulo, valor, destaque }: { titulo: string; valor: string; destaque?: boolean }) {
+type Cor = 'esmeralda' | 'indigo' | 'ambar' | 'azul' | 'violeta' | 'rosa'
+
+const BORDA_COR: Record<Cor, string> = {
+  esmeralda: 'border-t-emerald-500',
+  indigo: 'border-t-indigo-500',
+  ambar: 'border-t-amber-500',
+  azul: 'border-t-blue-500',
+  violeta: 'border-t-violet-500',
+  rosa: 'border-t-rose-500',
+}
+
+function StatCard({ titulo, valor, cor, destaque }: { titulo: string; valor: string; cor?: Cor; destaque?: boolean }) {
+  if (destaque) {
+    return (
+      <div className="rounded-xl bg-gradient-to-br from-red-600 to-red-800 p-4 text-white shadow-sm">
+        <p className="text-xs uppercase tracking-wide text-red-100">{titulo}</p>
+        <p className="mt-1 text-2xl font-semibold">{valor}</p>
+      </div>
+    )
+  }
   return (
-    <div className={`rounded-lg border p-4 ${destaque ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white'}`}>
-      <p className={`text-xs uppercase tracking-wide ${destaque ? 'text-slate-300' : 'text-slate-400'}`}>{titulo}</p>
-      <p className="mt-1 text-2xl font-semibold">{valor}</p>
+    <div className={`rounded-xl border-t-4 ${cor ? BORDA_COR[cor] : 'border-t-slate-300'} border-x border-b border-slate-200 bg-white p-4 shadow-sm`}>
+      <p className="text-xs uppercase tracking-wide text-slate-400">{titulo}</p>
+      <p className="mt-1 text-2xl font-semibold text-slate-900">{valor}</p>
     </div>
   )
 }
@@ -42,7 +61,7 @@ function Barra({ label, valor, total }: { label: string; valor: number; total: n
         </span>
       </div>
       <div className="h-2 rounded-full bg-slate-100">
-        <div className="h-2 rounded-full bg-slate-900" style={{ width: `${pct}%` }} />
+        <div className="h-2 rounded-full bg-red-600" style={{ width: `${pct}%` }} />
       </div>
     </div>
   )
@@ -108,17 +127,17 @@ export function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard titulo="Total de imóveis" valor={formatadorNumero.format(stats.total)} destaque />
-        <StatCard titulo="Taxa de ocupação" valor={`${stats.taxaOcupacao}%`} />
-        <StatCard titulo="Receita mensal (locação)" valor={formatadorMoeda.format(stats.receitaMensal)} />
-        <StatCard titulo="Área construída total" valor={`${formatadorNumero.format(Math.round(stats.areaConstruidaTotal))} m²`} />
-        <StatCard titulo="Área de terreno total" valor={`${formatadorNumero.format(Math.round(stats.areaTerrenoTotal))} m²`} />
-        <StatCard titulo="Valor contábil total" valor={formatadorMoeda.format(stats.valorContabilTotal)} />
-        <StatCard titulo="Valor de mercado total" valor={formatadorMoeda.format(stats.valorMercadoTotal)} />
-        <StatCard titulo="Pendentes de revisão" valor={formatadorNumero.format(stats.pendentesRevisao)} />
+        <StatCard titulo="Taxa de ocupação" valor={`${stats.taxaOcupacao}%`} cor="esmeralda" />
+        <StatCard titulo="Receita mensal (locação)" valor={formatadorMoeda.format(stats.receitaMensal)} cor="indigo" />
+        <StatCard titulo="Área construída total" valor={`${formatadorNumero.format(Math.round(stats.areaConstruidaTotal))} m²`} cor="ambar" />
+        <StatCard titulo="Área de terreno total" valor={`${formatadorNumero.format(Math.round(stats.areaTerrenoTotal))} m²`} cor="ambar" />
+        <StatCard titulo="Valor contábil total" valor={formatadorMoeda.format(stats.valorContabilTotal)} cor="azul" />
+        <StatCard titulo="Valor de mercado total" valor={formatadorMoeda.format(stats.valorMercadoTotal)} cor="violeta" />
+        <StatCard titulo="Pendentes de revisão" valor={formatadorNumero.format(stats.pendentesRevisao)} cor="rosa" />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-lg border border-slate-200 bg-white p-4">
+        <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <h3 className="mb-3 text-sm font-semibold text-slate-900">Situação dos imóveis</h3>
           <div className="space-y-3">
             {(Object.keys(STATUS_LABEL) as StatusImovel[]).map((status) => (
@@ -127,7 +146,7 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-4">
+        <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <h3 className="mb-3 text-sm font-semibold text-slate-900">Por tipo de imóvel</h3>
           <div className="space-y-3">
             {stats.tiposOrdenados.map(([tipo, valor]) => (
@@ -136,7 +155,7 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-4 lg:col-span-2">
+        <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
           <h3 className="mb-3 text-sm font-semibold text-slate-900">Municípios com mais imóveis</h3>
           <div className="space-y-3">
             {stats.topMunicipios.map(([municipio, valor]) => (
