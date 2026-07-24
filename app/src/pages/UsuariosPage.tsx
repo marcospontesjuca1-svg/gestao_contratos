@@ -1,12 +1,22 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { atualizarPerfilUsuario, criarPerfilUsuario, listarUsuarios } from '../services/usuariosService'
+import { criarUsuarioAuth } from '../lib/criarUsuarioAuth'
 import type { Perfil, Usuario } from '../types/usuario'
+
+function mensagemDeErro(erro: unknown): string {
+  const codigo = (erro as { code?: string })?.code
+  if (codigo === 'auth/email-already-in-use') return 'Já existe uma conta com esse e-mail.'
+  if (codigo === 'auth/weak-password') return 'A senha precisa ter pelo menos 6 caracteres.'
+  if (codigo === 'auth/invalid-email') return 'E-mail inválido.'
+  return 'Não foi possível criar o usuário. Tente novamente.'
+}
 
 export function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [carregando, setCarregando] = useState(true)
-  const [novo, setNovo] = useState({ uid: '', nome: '', email: '', perfil: 'operador' as Perfil })
+  const [novo, setNovo] = useState({ nome: '', email: '', senha: '', perfil: 'operador' as Perfil })
   const [criando, setCriando] = useState(false)
+  const [erro, setErro] = useState<string | null>(null)
 
   async function recarregar() {
     setCarregando(true)
@@ -20,11 +30,15 @@ export function UsuariosPage() {
 
   async function handleCriar(e: FormEvent) {
     e.preventDefault()
+    setErro(null)
     setCriando(true)
     try {
-      await criarPerfilUsuario(novo.uid.trim(), { nome: novo.nome, email: novo.email, perfil: novo.perfil })
-      setNovo({ uid: '', nome: '', email: '', perfil: 'operador' })
+      const uid = await criarUsuarioAuth(novo.email, novo.senha)
+      await criarPerfilUsuario(uid, { nome: novo.nome, email: novo.email, perfil: novo.perfil })
+      setNovo({ nome: '', email: '', senha: '', perfil: 'operador' })
       await recarregar()
+    } catch (e) {
+      setErro(mensagemDeErro(e))
     } finally {
       setCriando(false)
     }
@@ -83,22 +97,28 @@ export function UsuariosPage() {
       </div>
 
       <form onSubmit={handleCriar} className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
-        <h3 className="text-sm font-semibold text-slate-900">Vincular perfil a um usuário existente</h3>
-        <p className="text-xs text-slate-500">
-          Crie a credencial (e-mail/senha) no Console do Firebase Authentication primeiro, copie o UID gerado e informe abaixo para liberar o
-          acesso ao sistema com o perfil desejado.
-        </p>
+        <h3 className="text-sm font-semibold text-slate-900">Criar novo usuário</h3>
+        <p className="text-xs text-slate-500">Cria o login e o perfil de acesso de uma vez, direto por aqui.</p>
         <div className="grid grid-cols-2 gap-3">
-          <input required placeholder="UID (Firebase Auth)" className="input col-span-2" value={novo.uid} onChange={(e) => setNovo({ ...novo, uid: e.target.value })} />
           <input required placeholder="Nome" className="input" value={novo.nome} onChange={(e) => setNovo({ ...novo, nome: e.target.value })} />
           <input required type="email" placeholder="E-mail" className="input" value={novo.email} onChange={(e) => setNovo({ ...novo, email: e.target.value })} />
+          <input
+            required
+            type="password"
+            minLength={6}
+            placeholder="Senha (mín. 6 caracteres)"
+            className="input"
+            value={novo.senha}
+            onChange={(e) => setNovo({ ...novo, senha: e.target.value })}
+          />
           <select className="input" value={novo.perfil} onChange={(e) => setNovo({ ...novo, perfil: e.target.value as Perfil })}>
             <option value="operador">operador</option>
             <option value="admin">admin</option>
           </select>
         </div>
+        {erro && <p className="text-sm text-red-600">{erro}</p>}
         <button type="submit" disabled={criando} className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50">
-          {criando ? 'Salvando…' : 'Vincular perfil'}
+          {criando ? 'Criando…' : 'Criar usuário'}
         </button>
       </form>
     </div>
