@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Timestamp } from 'firebase/firestore'
 import { atualizarImovel, buscarImovel, criarImovel } from '../services/imoveisService'
 import { useAuth } from '../lib/auth'
-import type { ImovelInput, Operacao, StatusImovel } from '../types/imovel'
+import type { Anexo, ImovelInput, Operacao, StatusImovel } from '../types/imovel'
 
 const VAZIO: ImovelInput = {
   endereco: '',
@@ -193,6 +193,15 @@ export function ImovelFormPage() {
           </Campo>
         </Secao>
 
+        <Secao titulo="Fotos e anexos">
+          <Campo label="Fotos (link direto da imagem)" className="col-span-2">
+            <ListaFotos fotos={form.fotos} onChange={(fotos) => set('fotos', fotos)} />
+          </Campo>
+          <Campo label="Documentos anexos (link do arquivo)" className="col-span-2">
+            <ListaAnexos anexos={form.anexos} onChange={(anexos) => set('anexos', anexos)} />
+          </Campo>
+        </Secao>
+
         <Secao titulo="Locação vigente">
           <Campo label="Locatário">
             <input className="input" value={form.locacao.locatario ?? ''} onChange={(e) => set('locacao', { ...form.locacao, locatario: e.target.value || null })} />
@@ -280,5 +289,93 @@ function Campo({ label, children, className }: { label: string; children: ReactN
       <span className="text-xs uppercase tracking-wide text-slate-400">{label}</span>
       {children}
     </label>
+  )
+}
+
+/**
+ * Sem upload de arquivo (exigiria Firebase Storage no plano pago) — o admin
+ * hospeda a foto em algum lugar (Drive, OneDrive, etc.) e cola aqui o link
+ * direto da imagem, no mesmo esquema já usado para o KMZ.
+ */
+function ListaFotos({ fotos, onChange }: { fotos: string[]; onChange: (fotos: string[]) => void }) {
+  const [novaUrl, setNovaUrl] = useState('')
+
+  function adicionar() {
+    const url = novaUrl.trim()
+    if (!url) return
+    onChange([...fotos, url])
+    setNovaUrl('')
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <input
+          className="input"
+          placeholder="URL direta da imagem"
+          value={novaUrl}
+          onChange={(e) => setNovaUrl(e.target.value)}
+        />
+        <button type="button" onClick={adicionar} className="shrink-0 rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
+          Adicionar
+        </button>
+      </div>
+      {fotos.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {fotos.map((url, i) => (
+            <div key={i} className="group relative">
+              <img src={url} alt="" className="h-20 w-20 rounded-md border border-slate-200 object-cover" />
+              <button
+                type="button"
+                onClick={() => onChange(fotos.filter((_, idx) => idx !== i))}
+                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs leading-none text-white"
+                title="Remover"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ListaAnexos({ anexos, onChange }: { anexos: Anexo[]; onChange: (anexos: Anexo[]) => void }) {
+  const [nome, setNome] = useState('')
+  const [url, setUrl] = useState('')
+
+  function adicionar() {
+    if (!nome.trim() || !url.trim()) return
+    const tipo = url.split('.').pop()?.split(/[?#]/)[0]?.toLowerCase() || 'arquivo'
+    onChange([...anexos, { nome: nome.trim(), url: url.trim(), tipo }])
+    setNome('')
+    setUrl('')
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <input className="input" placeholder="Nome do documento" value={nome} onChange={(e) => setNome(e.target.value)} />
+        <input className="input" placeholder="URL do arquivo" value={url} onChange={(e) => setUrl(e.target.value)} />
+        <button type="button" onClick={adicionar} className="shrink-0 rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
+          Adicionar
+        </button>
+      </div>
+      {anexos.length > 0 && (
+        <ul className="space-y-1">
+          {anexos.map((a, i) => (
+            <li key={i} className="flex items-center justify-between rounded-md border border-slate-200 px-2 py-1.5 text-sm">
+              <a href={a.url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                {a.nome}
+              </a>
+              <button type="button" onClick={() => onChange(anexos.filter((_, idx) => idx !== i))} className="text-xs text-red-600 hover:underline">
+                remover
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   )
 }
