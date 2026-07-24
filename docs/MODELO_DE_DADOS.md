@@ -31,8 +31,8 @@ o schema atual — hoje só guardamos a locação vigente.
 | `municipio` | string \| null | `MUNICÍPIO` (vazia) | Pré-preenchido via parser de endereço (best-effort) |
 | `bairro` | string \| null | `BAIRRO` (vazia) | Idem — poucos endereços trazem bairro explícito |
 | `enderecoRevisado` | boolean | — (novo) | `false` quando estado/município/bairro vieram do parser automático; UI sinaliza "revisar" |
-| `operacao` | `'LOCACAO' \| 'VENDA' \| 'USO_INTERNO'` | `OPERAÇÃO` (quase toda vazia, 4 = "VENDA") | Default `'LOCACAO'` quando vazio, exceto quando `STATUS = ATIVO INTERNO` → `'USO_INTERNO'` |
-| `segmento` | `'COMERCIAL' \| 'RESIDENCIAL'` | `SEGMENTO` (100% vazia) | Não veio preenchida; inferida por `tipo` na importação (regra abaixo) e revisável no cadastro |
+| `operacao` | `'VENDA' \| 'LOCACAO' \| 'DESENVOLVIMENTO'` | `OPERAÇÃO` (quase toda vazia, 4 = "VENDA") | Default `'LOCACAO'` quando vazio. "Uso interno" não é uma operação — fica registrado em `status = 'ATIVO_INTERNO'` |
+| `segmento` | string (texto livre) \| null | `SEGMENTO` (100% vazia) | Natureza de uso do imóvel (ex.: Varejo, Shopping, Galpão, Depósito, Construção civil) — não é uma lista fechada, fica a critério de quem cadastra |
 | `proprietario` | string | `PROPRIETÁRIOS` | Sigla da empresa/pessoa proprietária (ex.: ESAM, CPC, C.ROLIM, SAMA SARO) |
 | `tipo` | string (enum aberto) | `TIPO` | Valores observados: `SALA`, `LOJA`, `TERRENO`, `APTO`, `PRÉDIO`, `MALL`, `CASA` |
 | `valorContabil` | number \| null | `Valor Contábil` (vazia) | Valor contábil do ativo |
@@ -58,11 +58,6 @@ o schema atual — hoje só guardamos a locação vigente.
 | `criadoEm` / `atualizadoEm` | Timestamp | — | Auditoria |
 | `criadoPor` / `atualizadoPor` | string (uid) | — | Auditoria |
 | `importadoDe` | string \| null | — | Id do documento em `importacoes/` que originou o registro (rastreabilidade) |
-
-### Regra de inferência de `segmento` (import)
-`APTO` e `CASA` → `RESIDENCIAL`. `SALA`, `LOJA`, `PRÉDIO`, `MALL`, `TERRENO` →
-`COMERCIAL` (padrão do portfólio da imobiliária). Sempre editável depois — é
-só um chute inicial para não deixar 301 registros com o campo vazio.
 
 ### Cálculo de `comparativoMercado` (exibição)
 ```

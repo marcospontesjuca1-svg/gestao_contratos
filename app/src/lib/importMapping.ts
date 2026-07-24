@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase/firestore'
-import type { ImovelInput, Operacao, Segmento, StatusImovel, TipoImovel } from '../types/imovel'
+import type { ImovelInput, Operacao, StatusImovel, TipoImovel } from '../types/imovel'
 
 /**
  * Mapeamento de colunas -> campos, calibrado com a planilha real
@@ -72,14 +72,10 @@ function normalizarTipo(raw: unknown): TipoImovel {
   return (s || 'SALA') as TipoImovel
 }
 
-function inferirSegmento(tipo: TipoImovel): Segmento {
-  return tipo === 'APTO' || tipo === 'CASA' ? 'RESIDENCIAL' : 'COMERCIAL'
-}
-
-function normalizarOperacao(raw: unknown, status: StatusImovel): Operacao {
+function normalizarOperacao(raw: unknown): Operacao {
   const s = textoOuNull(raw)?.toUpperCase() ?? ''
   if (s.includes('VENDA')) return 'VENDA'
-  if (status === 'ATIVO_INTERNO') return 'USO_INTERNO'
+  if (s.includes('DESENVOLVIMENTO')) return 'DESENVOLVIMENTO'
   return 'LOCACAO'
 }
 
@@ -145,8 +141,8 @@ export function mapearLinha(linha: Record<string, unknown>): LinhaImportada {
     bairro,
     enderecoRevisado,
 
-    operacao: normalizarOperacao(linha['OPERAÇÃO'], status),
-    segmento: (textoOuNull(linha['SEGMENTO']) as Segmento | null) ?? inferirSegmento(tipo),
+    operacao: normalizarOperacao(linha['OPERAÇÃO']),
+    segmento: textoOuNull(linha['SEGMENTO']),
     proprietario: textoOuNull(linha['PROPRIETÁRIOS']),
     tipo,
 

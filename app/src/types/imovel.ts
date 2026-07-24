@@ -1,8 +1,9 @@
 import type { Timestamp } from 'firebase/firestore'
 
-export type Operacao = 'LOCACAO' | 'VENDA' | 'USO_INTERNO'
+export type Operacao = 'VENDA' | 'LOCACAO' | 'DESENVOLVIMENTO'
 
-export type Segmento = 'COMERCIAL' | 'RESIDENCIAL'
+/** Natureza de uso do imóvel — texto livre (ex.: Varejo, Shopping, Galpão, Depósito, Construção civil). */
+export type Segmento = string
 
 export type StatusImovel = 'LOCADO' | 'VAGO' | 'ATIVO_INTERNO' | 'LOCADO_PARCIAL'
 

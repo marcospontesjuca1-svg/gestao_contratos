@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Timestamp } from 'firebase/firestore'
 import { atualizarImovel, buscarImovel, criarImovel } from '../services/imoveisService'
 import { useAuth } from '../lib/auth'
-import type { ImovelInput, Operacao, Segmento, StatusImovel } from '../types/imovel'
+import type { ImovelInput, Operacao, StatusImovel } from '../types/imovel'
 
 const VAZIO: ImovelInput = {
   endereco: '',
@@ -109,12 +109,24 @@ export function ImovelFormPage() {
           <Campo label="Tipo">
             <input className="input" value={form.tipo} onChange={(e) => set('tipo', e.target.value)} />
           </Campo>
-          <Campo label="Segmento">
-            <select className="input" value={form.segmento ?? ''} onChange={(e) => set('segmento', (e.target.value || null) as Segmento | null)}>
-              <option value="">—</option>
-              <option value="COMERCIAL">Comercial</option>
-              <option value="RESIDENCIAL">Residencial</option>
-            </select>
+          <Campo label="Segmento (natureza de uso)">
+            <input
+              className="input"
+              list="segmentos-sugeridos"
+              placeholder="Ex.: Varejo, Shopping, Galpão, Depósito, Construção civil…"
+              value={form.segmento ?? ''}
+              onChange={(e) => set('segmento', e.target.value || null)}
+            />
+            <datalist id="segmentos-sugeridos">
+              <option value="Varejo" />
+              <option value="Shopping" />
+              <option value="Galpão" />
+              <option value="Depósito" />
+              <option value="Escritório" />
+              <option value="Construção civil" />
+              <option value="Residencial" />
+              <option value="Institucional" />
+            </datalist>
           </Campo>
           <Campo label="Situação">
             <select className="input" value={form.status} onChange={(e) => set('status', e.target.value as StatusImovel)}>
@@ -126,9 +138,9 @@ export function ImovelFormPage() {
           </Campo>
           <Campo label="Operação">
             <select className="input" value={form.operacao} onChange={(e) => set('operacao', e.target.value as Operacao)}>
-              <option value="LOCACAO">Locação</option>
               <option value="VENDA">Venda</option>
-              <option value="USO_INTERNO">Uso interno</option>
+              <option value="LOCACAO">Locação</option>
+              <option value="DESENVOLVIMENTO">Desenvolvimento</option>
             </select>
           </Campo>
         </Secao>
