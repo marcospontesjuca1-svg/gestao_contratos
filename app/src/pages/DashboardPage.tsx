@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { escutarImoveis } from '../services/imoveisService'
+import { MapaOperacoes } from '../components/MapaOperacoes'
 import type { Imovel, StatusImovel, TipoImovel } from '../types/imovel'
 
 const formatadorMoeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
@@ -111,6 +112,7 @@ export function DashboardPage() {
       areaConstruidaTotal,
       areaTerrenoTotal,
       pendentesRevisao,
+      porMunicipio,
       topMunicipios,
       tiposOrdenados,
     }
@@ -155,12 +157,18 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
-          <h3 className="mb-3 text-sm font-semibold text-slate-900">Municípios com mais imóveis</h3>
-          <div className="space-y-3">
-            {stats.topMunicipios.map(([municipio, valor]) => (
-              <Barra key={municipio} label={municipio} valor={valor} total={stats.total} />
-            ))}
+        <section className="grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:col-span-2">
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-slate-900">Onde estão nossos imóveis</h3>
+            <MapaOperacoes contagemPorMunicipio={stats.porMunicipio} />
+          </div>
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-slate-900">Municípios com mais imóveis</h3>
+            <div className="space-y-3">
+              {stats.topMunicipios.map(([municipio, valor]) => (
+                <Barra key={municipio} label={municipio} valor={valor} total={stats.total} />
+              ))}
+            </div>
           </div>
         </section>
       </div>
