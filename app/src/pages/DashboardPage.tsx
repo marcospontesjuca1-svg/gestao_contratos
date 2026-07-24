@@ -157,10 +157,10 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:col-span-2">
-          <div>
+        <section className="grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2 lg:grid-cols-3">
+          <div className="lg:col-span-2">
             <h3 className="mb-3 text-sm font-semibold text-slate-900">Onde estão nossos imóveis</h3>
-            <MapaOperacoes contagemPorMunicipio={stats.porMunicipio} />
+            <MapaOperacoes imoveis={imoveis} />
           </div>
           <div>
             <h3 className="mb-3 text-sm font-semibold text-slate-900">Municípios com mais imóveis</h3>
