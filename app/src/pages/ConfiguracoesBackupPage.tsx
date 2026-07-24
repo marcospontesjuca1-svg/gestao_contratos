@@ -7,7 +7,7 @@ import { baixarBackupJson, baixarBackupXlsx } from '../lib/backup'
 import { useAuth } from '../lib/auth'
 import type { Configuracoes } from '../types/configuracoes'
 
-export function ConfiguracoesPage() {
+export function ConfiguracoesBackupPage() {
   const { user, usuario } = useAuth()
   const [config, setConfig] = useState<Configuracoes | null>(null)
   const [gerando, setGerando] = useState<'xlsx' | 'json' | null>(null)
@@ -50,8 +50,6 @@ export function ConfiguracoesPage() {
 
   return (
     <div className="max-w-lg space-y-4">
-      <h2 className="text-xl font-semibold text-slate-900">Configurações gerais</h2>
-
       <fieldset className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
         <legend className="px-1 text-sm font-semibold text-slate-900">Backup</legend>
 

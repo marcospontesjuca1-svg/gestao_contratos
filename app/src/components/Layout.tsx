@@ -24,16 +24,6 @@ export function Layout() {
             Imóveis
           </NavLink>
           {isAdmin && (
-            <NavLink to="/importacao" className={linkClasse}>
-              Importação
-            </NavLink>
-          )}
-          {isAdmin && (
-            <NavLink to="/usuarios" className={linkClasse}>
-              Usuários
-            </NavLink>
-          )}
-          {isAdmin && (
             <NavLink to="/configuracoes" className={linkClasse}>
               Configurações
             </NavLink>

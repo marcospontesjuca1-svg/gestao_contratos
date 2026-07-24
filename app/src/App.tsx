@@ -8,7 +8,8 @@ import { ImoveisListPage } from './pages/ImoveisListPage'
 import { ImovelDetalhePage } from './pages/ImovelDetalhePage'
 import { ImovelFormPage } from './pages/ImovelFormPage'
 import { ImportacaoPage } from './pages/ImportacaoPage'
-import { ConfiguracoesPage } from './pages/ConfiguracoesPage'
+import { ConfiguracoesLayout } from './pages/ConfiguracoesLayout'
+import { ConfiguracoesBackupPage } from './pages/ConfiguracoesBackupPage'
 import { UsuariosPage } from './pages/UsuariosPage'
 
 export default function App() {
@@ -44,29 +45,17 @@ export default function App() {
               }
             />
             <Route
-              path="/importacao"
-              element={
-                <ProtectedRoute perfisPermitidos={['admin']}>
-                  <ImportacaoPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/usuarios"
-              element={
-                <ProtectedRoute perfisPermitidos={['admin']}>
-                  <UsuariosPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/configuracoes"
               element={
                 <ProtectedRoute perfisPermitidos={['admin']}>
-                  <ConfiguracoesPage />
+                  <ConfiguracoesLayout />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<ConfiguracoesBackupPage />} />
+              <Route path="importacao" element={<ImportacaoPage />} />
+              <Route path="usuarios" element={<UsuariosPage />} />
+            </Route>
           </Route>
         </Routes>
       </AuthProvider>
