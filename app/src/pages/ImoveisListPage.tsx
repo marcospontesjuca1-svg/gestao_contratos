@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { aplicarFiltros, escutarImoveis, opcoesDeFiltro } from '../services/imoveisService'
 import { FiltroBar } from '../components/FiltroBar'
 import { ImoveisTable } from '../components/ImoveisTable'
+import { GerenciadorRelatorios } from '../components/GerenciadorRelatorios'
 import { useAuth } from '../lib/auth'
 import type { FiltrosImoveis, Imovel } from '../types/imovel'
 
@@ -11,6 +12,7 @@ export function ImoveisListPage() {
   const [todos, setTodos] = useState<Imovel[]>([])
   const [filtros, setFiltros] = useState<FiltrosImoveis>({})
   const [carregando, setCarregando] = useState(true)
+  const [mostrarRelatorio, setMostrarRelatorio] = useState(false)
 
   useEffect(() => {
     return escutarImoveis({}, (todosImoveis) => {
@@ -29,14 +31,24 @@ export function ImoveisListPage() {
           <h2 className="text-xl font-semibold text-slate-900">Imóveis</h2>
           <p className="text-sm text-slate-500">{imoveis.length} de {todos.length} imóveis</p>
         </div>
-        {perfil === 'admin' && (
-          <Link to="/imoveis/novo" className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700">
-            + Novo imóvel
-          </Link>
-        )}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setMostrarRelatorio((v) => !v)}
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            {mostrarRelatorio ? 'Fechar relatório' : 'Relatório'}
+          </button>
+          {perfil === 'admin' && (
+            <Link to="/imoveis/novo" className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700">
+              + Novo imóvel
+            </Link>
+          )}
+        </div>
       </div>
 
       <FiltroBar filtros={filtros} onChange={setFiltros} opcoes={opcoes} />
+
+      {mostrarRelatorio && <GerenciadorRelatorios imoveis={imoveis} onFechar={() => setMostrarRelatorio(false)} />}
 
       {carregando ? <p className="p-8 text-center text-sm text-slate-400">Carregando imóveis…</p> : <ImoveisTable imoveis={imoveis} />}
     </div>
