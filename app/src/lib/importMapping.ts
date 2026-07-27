@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase/firestore'
-import type { ImovelInput, Operacao, StatusImovel, TipoImovel } from '../types/imovel'
+import type { DadosLocacao, Imovel, ImovelInput, Operacao, StatusImovel, TipoImovel } from '../types/imovel'
 
 /**
  * Mapeamento de colunas -> campos, calibrado com a planilha real
@@ -180,4 +180,62 @@ export function mapearLinha(linha: Record<string, unknown>): LinhaImportada {
   }
 
   return { imovel, avisos }
+}
+
+/** Chave de casamento entre uma linha importada e um imóvel já cadastrado. */
+export function normalizarEndereco(endereco: string): string {
+  return endereco.trim().toUpperCase().replace(/\s+/g, ' ')
+}
+
+function preferirNaoNulo<T>(importado: T | null, existente: T | null): T | null {
+  return importado ?? existente
+}
+
+/**
+ * Reimportar a planilha deve atualizar o cadastro existente, não duplicar.
+ * Casamos pelo endereço e mesclamos: os campos que vêm da planilha (status,
+ * locação, valores etc.) são atualizados quando presentes na linha nova;
+ * o que só existe no app (KMZ, fotos, anexos, comparativo de mercado,
+ * coordenadas) é sempre preservado, já que a planilha nunca traz isso.
+ */
+export function mesclarComExistente(existente: Imovel, importado: ImovelInput): ImovelInput {
+  const locacaoMesclada: DadosLocacao = {
+    locatario: preferirNaoNulo(importado.locacao.locatario, existente.locacao.locatario),
+    valorAluguel: preferirNaoNulo(importado.locacao.valorAluguel, existente.locacao.valorAluguel),
+    dataInicio: preferirNaoNulo(importado.locacao.dataInicio, existente.locacao.dataInicio),
+    dataFim: preferirNaoNulo(importado.locacao.dataFim, existente.locacao.dataFim),
+    reajuste: preferirNaoNulo(importado.locacao.reajuste, existente.locacao.reajuste),
+    valorM2: preferirNaoNulo(importado.locacao.valorM2, existente.locacao.valorM2),
+  }
+
+  // Se o endereço já foi revisado manualmente, não deixa a nova inferência automática sobrescrever.
+  const manterLocalizacaoAtual = existente.enderecoRevisado
+  const estado = manterLocalizacaoAtual ? existente.estado : preferirNaoNulo(importado.estado, existente.estado)
+  const municipio = manterLocalizacaoAtual ? existente.municipio : preferirNaoNulo(importado.municipio, existente.municipio)
+  const bairro = manterLocalizacaoAtual ? existente.bairro : preferirNaoNulo(importado.bairro, existente.bairro)
+
+  return {
+    ...importado,
+    estado,
+    municipio,
+    bairro,
+    enderecoRevisado: manterLocalizacaoAtual || importado.enderecoRevisado,
+    pastaFisica: existente.pastaFisica || importado.pastaFisica,
+    kmzUrl: existente.kmzUrl,
+    coordenadas: existente.coordenadas,
+    fotos: existente.fotos,
+    anexos: existente.anexos,
+    nomeFantasia: preferirNaoNulo(importado.nomeFantasia, existente.nomeFantasia),
+    valorContabil: preferirNaoNulo(importado.valorContabil, existente.valorContabil),
+    valorMercadoImovel: preferirNaoNulo(importado.valorMercadoImovel, existente.valorMercadoImovel),
+    matriculaZona: preferirNaoNulo(importado.matriculaZona, existente.matriculaZona),
+    inscricaoIptu: preferirNaoNulo(importado.inscricaoIptu, existente.inscricaoIptu),
+    areaTerreno: preferirNaoNulo(importado.areaTerreno, existente.areaTerreno),
+    areaConstruida: preferirNaoNulo(importado.areaConstruida, existente.areaConstruida),
+    segmento: preferirNaoNulo(importado.segmento, existente.segmento),
+    proprietario: preferirNaoNulo(importado.proprietario, existente.proprietario),
+    locacao: locacaoMesclada,
+    comparativoMercado: existente.comparativoMercado,
+    importadoDe: existente.importadoDe,
+  }
 }
