@@ -49,7 +49,7 @@ export const CAMPOS_RELATORIO: CampoRelatorio[] = [
 
 export const GRUPOS_RELATORIO = Array.from(new Set(CAMPOS_RELATORIO.map((c) => c.grupo)))
 
-/** Colunas mostradas na tabela quando o gerenciador de relatórios está fechado. */
+/** Colunas iniciais da tabela de imóveis, antes de qualquer configuração salva no Gerador de Relatórios. */
 export const COLUNAS_PADRAO_TABELA = ['endereco', 'municipio', 'tipo', 'status', 'areaConstruida', 'valorAluguel']
 
 const CHAVE_ARMAZENAMENTO = 'relatorio-colunas-selecionadas'
@@ -57,11 +57,11 @@ const CHAVE_ARMAZENAMENTO = 'relatorio-colunas-selecionadas'
 export function carregarColunasSalvas(): string[] {
   try {
     const bruto = localStorage.getItem(CHAVE_ARMAZENAMENTO)
-    if (!bruto) return CAMPOS_RELATORIO.map((c) => c.chave)
+    if (!bruto) return COLUNAS_PADRAO_TABELA
     const salvas: unknown = JSON.parse(bruto)
-    return Array.isArray(salvas) ? salvas.filter((c): c is string => typeof c === 'string') : CAMPOS_RELATORIO.map((c) => c.chave)
+    return Array.isArray(salvas) && salvas.length > 0 ? salvas.filter((c): c is string => typeof c === 'string') : COLUNAS_PADRAO_TABELA
   } catch {
-    return CAMPOS_RELATORIO.map((c) => c.chave)
+    return COLUNAS_PADRAO_TABELA
   }
 }
 
