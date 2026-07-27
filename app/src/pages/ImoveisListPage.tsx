@@ -4,6 +4,7 @@ import { aplicarFiltros, escutarImoveis, opcoesDeFiltro } from '../services/imov
 import { FiltroBar } from '../components/FiltroBar'
 import { ImoveisTable } from '../components/ImoveisTable'
 import { GerenciadorRelatorios } from '../components/GerenciadorRelatorios'
+import { carregarColunasSalvas, COLUNAS_PADRAO_TABELA } from '../lib/relatorio'
 import { useAuth } from '../lib/auth'
 import type { FiltrosImoveis, Imovel } from '../types/imovel'
 
@@ -13,6 +14,7 @@ export function ImoveisListPage() {
   const [filtros, setFiltros] = useState<FiltrosImoveis>({})
   const [carregando, setCarregando] = useState(true)
   const [mostrarRelatorio, setMostrarRelatorio] = useState(false)
+  const [colunasRelatorio, setColunasRelatorio] = useState<string[]>(carregarColunasSalvas)
 
   useEffect(() => {
     return escutarImoveis({}, (todosImoveis) => {
@@ -48,9 +50,20 @@ export function ImoveisListPage() {
 
       <FiltroBar filtros={filtros} onChange={setFiltros} opcoes={opcoes} />
 
-      {mostrarRelatorio && <GerenciadorRelatorios imoveis={imoveis} onFechar={() => setMostrarRelatorio(false)} />}
+      {mostrarRelatorio && (
+        <GerenciadorRelatorios
+          imoveis={imoveis}
+          selecionadas={colunasRelatorio}
+          onChange={setColunasRelatorio}
+          onFechar={() => setMostrarRelatorio(false)}
+        />
+      )}
 
-      {carregando ? <p className="p-8 text-center text-sm text-slate-400">Carregando imóveis…</p> : <ImoveisTable imoveis={imoveis} />}
+      {carregando ? (
+        <p className="p-8 text-center text-sm text-slate-400">Carregando imóveis…</p>
+      ) : (
+        <ImoveisTable imoveis={imoveis} colunas={mostrarRelatorio ? colunasRelatorio : COLUNAS_PADRAO_TABELA} />
+      )}
     </div>
   )
 }

@@ -1,20 +1,16 @@
-import { useState } from 'react'
-import { baixarRelatorioXlsx, carregarColunasSalvas, CAMPOS_RELATORIO, GRUPOS_RELATORIO, salvarColunas } from '../lib/relatorio'
+import { baixarRelatorioXlsx, CAMPOS_RELATORIO, GRUPOS_RELATORIO, salvarColunas } from '../lib/relatorio'
 import type { Imovel } from '../types/imovel'
 
-export function GerenciadorRelatorios({ imoveis, onFechar }: { imoveis: Imovel[]; onFechar: () => void }) {
-  const [selecionadas, setSelecionadas] = useState<string[]>(carregarColunasSalvas)
+interface Props {
+  imoveis: Imovel[]
+  selecionadas: string[]
+  onChange: (colunas: string[]) => void
+  onFechar: () => void
+}
 
+export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onFechar }: Props) {
   function alternar(chave: string) {
-    setSelecionadas((atual) => (atual.includes(chave) ? atual.filter((c) => c !== chave) : [...atual, chave]))
-  }
-
-  function marcarTodas() {
-    setSelecionadas(CAMPOS_RELATORIO.map((c) => c.chave))
-  }
-
-  function desmarcarTodas() {
-    setSelecionadas([])
+    onChange(selecionadas.includes(chave) ? selecionadas.filter((c) => c !== chave) : [...selecionadas, chave])
   }
 
   function handleGerar() {
@@ -28,8 +24,8 @@ export function GerenciadorRelatorios({ imoveis, onFechar }: { imoveis: Imovel[]
         <div>
           <h3 className="text-sm font-semibold text-slate-900">Gerenciador de relatórios</h3>
           <p className="text-xs text-slate-500">
-            Escolha as colunas do Excel. Gera com os {imoveis.length} imóve{imoveis.length === 1 ? 'l' : 'is'} que estão na listagem agora
-            (respeita os filtros aplicados).
+            Escolha as colunas — a tabela abaixo muda junto. Gera o Excel com os {imoveis.length} imóve{imoveis.length === 1 ? 'l' : 'is'} que
+            estão na listagem agora (respeita os filtros aplicados).
           </p>
         </div>
         <button onClick={onFechar} className="text-sm text-slate-400 hover:text-slate-700">
@@ -38,10 +34,10 @@ export function GerenciadorRelatorios({ imoveis, onFechar }: { imoveis: Imovel[]
       </div>
 
       <div className="mb-3 flex gap-3 text-xs">
-        <button onClick={marcarTodas} className="text-blue-600 hover:underline">
+        <button onClick={() => onChange(CAMPOS_RELATORIO.map((c) => c.chave))} className="text-blue-600 hover:underline">
           Marcar todas
         </button>
-        <button onClick={desmarcarTodas} className="text-blue-600 hover:underline">
+        <button onClick={() => onChange([])} className="text-blue-600 hover:underline">
           Desmarcar todas
         </button>
       </div>

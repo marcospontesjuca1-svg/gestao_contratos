@@ -2,6 +2,9 @@ import * as XLSX from 'xlsx'
 import type { Imovel } from '../types/imovel'
 
 const formatadorData = (ts: Imovel['locacao']['dataInicio']) => (ts ? ts.toDate().toLocaleDateString('pt-BR') : '')
+const formatadorMoeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+const formatarMoeda = (v: number | null) => (v != null ? formatadorMoeda.format(v) : '')
+const formatarArea = (v: number | null) => (v != null ? `${v} m²` : '')
 
 export interface CampoRelatorio {
   chave: string
@@ -28,23 +31,26 @@ export const CAMPOS_RELATORIO: CampoRelatorio[] = [
   { chave: 'pastaFisica', rotulo: 'Pasta física', grupo: 'Documentação', obter: (i) => (i.pastaFisica ? 'Sim' : 'Não') },
   { chave: 'kmzUrl', rotulo: 'KMZ', grupo: 'Documentação', obter: (i) => i.kmzUrl ?? '' },
 
-  { chave: 'areaTerreno', rotulo: 'Área terreno (m²)', grupo: 'Áreas e valores', obter: (i) => i.areaTerreno ?? '' },
-  { chave: 'areaConstruida', rotulo: 'Área construída (m²)', grupo: 'Áreas e valores', obter: (i) => i.areaConstruida ?? '' },
-  { chave: 'valorContabil', rotulo: 'Valor contábil', grupo: 'Áreas e valores', obter: (i) => i.valorContabil ?? '' },
-  { chave: 'valorMercadoImovel', rotulo: 'Valor de mercado (imóvel)', grupo: 'Áreas e valores', obter: (i) => i.valorMercadoImovel ?? '' },
+  { chave: 'areaTerreno', rotulo: 'Área terreno (m²)', grupo: 'Áreas e valores', obter: (i) => formatarArea(i.areaTerreno) },
+  { chave: 'areaConstruida', rotulo: 'Área construída (m²)', grupo: 'Áreas e valores', obter: (i) => formatarArea(i.areaConstruida) },
+  { chave: 'valorContabil', rotulo: 'Valor contábil', grupo: 'Áreas e valores', obter: (i) => formatarMoeda(i.valorContabil) },
+  { chave: 'valorMercadoImovel', rotulo: 'Valor de mercado (imóvel)', grupo: 'Áreas e valores', obter: (i) => formatarMoeda(i.valorMercadoImovel) },
 
   { chave: 'locatario', rotulo: 'Locatário', grupo: 'Locação', obter: (i) => i.locacao.locatario ?? '' },
-  { chave: 'valorAluguel', rotulo: 'Valor do aluguel', grupo: 'Locação', obter: (i) => i.locacao.valorAluguel ?? '' },
+  { chave: 'valorAluguel', rotulo: 'Valor do aluguel', grupo: 'Locação', obter: (i) => formatarMoeda(i.locacao.valorAluguel) },
   { chave: 'dataInicio', rotulo: 'Início do contrato', grupo: 'Locação', obter: (i) => formatadorData(i.locacao.dataInicio) },
   { chave: 'dataFim', rotulo: 'Fim do contrato', grupo: 'Locação', obter: (i) => formatadorData(i.locacao.dataFim) },
   { chave: 'reajuste', rotulo: 'Reajuste', grupo: 'Locação', obter: (i) => i.locacao.reajuste ?? '' },
-  { chave: 'valorM2', rotulo: 'R$/m² do imóvel', grupo: 'Locação', obter: (i) => i.locacao.valorM2 ?? '' },
+  { chave: 'valorM2', rotulo: 'R$/m² do imóvel', grupo: 'Locação', obter: (i) => formatarMoeda(i.locacao.valorM2) },
 
-  { chave: 'valorM2Regiao', rotulo: 'R$/m² de mercado (região)', grupo: 'Comparativo de mercado', obter: (i) => i.comparativoMercado.valorM2Regiao ?? '' },
+  { chave: 'valorM2Regiao', rotulo: 'R$/m² de mercado (região)', grupo: 'Comparativo de mercado', obter: (i) => formatarMoeda(i.comparativoMercado.valorM2Regiao) },
   { chave: 'fonteMercado', rotulo: 'Fonte do comparativo', grupo: 'Comparativo de mercado', obter: (i) => i.comparativoMercado.fonte ?? '' },
 ]
 
 export const GRUPOS_RELATORIO = Array.from(new Set(CAMPOS_RELATORIO.map((c) => c.grupo)))
+
+/** Colunas mostradas na tabela quando o gerenciador de relatórios está fechado. */
+export const COLUNAS_PADRAO_TABELA = ['endereco', 'municipio', 'tipo', 'status', 'areaConstruida', 'valorAluguel']
 
 const CHAVE_ARMAZENAMENTO = 'relatorio-colunas-selecionadas'
 
