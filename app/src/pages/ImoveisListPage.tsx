@@ -58,7 +58,7 @@ export function ImoveisListPage() {
         </div>
       </div>
 
-      <FiltroBar filtros={filtros} onChange={setFiltros} opcoes={opcoes} />
+      {!mostrarRelatorio && <FiltroBar filtros={filtros} onChange={setFiltros} opcoes={opcoes} />}
 
       {mostrarRelatorio && (
         <GerenciadorRelatorios
