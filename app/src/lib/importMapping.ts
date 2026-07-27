@@ -10,6 +10,7 @@ export const COLUNAS_ESPERADAS = [
   'PASTA',
   'KMZ',
   'ESTADO',
+  'CIDADE', // aceito como sinônimo de MUNICÍPIO
   'MUNICÍPIO',
   'BAIRRO',
   'OPERAÇÃO',
@@ -108,7 +109,8 @@ export function mapearLinha(linha: Record<string, unknown>): LinhaImportada {
   const tipo = normalizarTipo(linha['TIPO'])
 
   const estado = textoOuNull(linha['ESTADO'])
-  let municipio = textoOuNull(linha['MUNICÍPIO'])
+  // Aceita tanto "CIDADE" quanto "MUNICÍPIO" como nome da coluna.
+  let municipio = textoOuNull(linha['CIDADE']) ?? textoOuNull(linha['MUNICÍPIO'])
   let bairro = textoOuNull(linha['BAIRRO'])
   let enderecoRevisado = true
 

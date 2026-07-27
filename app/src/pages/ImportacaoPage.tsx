@@ -64,9 +64,9 @@ export function ImportacaoPage() {
       <div>
         <h2 className="text-xl font-semibold text-slate-900">Importação de planilha</h2>
         <p className="text-sm text-slate-500">
-          Envie a planilha no formato "Lista Geral de Imóveis" (colunas: ENDEREÇO, PASTA, KMZ, ESTADO, MUNICÍPIO, BAIRRO, OPERAÇÃO, SEGMENTO,
-          PROPRIETÁRIOS, TIPO, Valor Contábil, Valor de Mercado, STATUS, MATRÍCULA / ZONA, INSC. IPTU, ÁREA TERRENO, ÁREA CONSTRUÍDA, NOME DE
-          FANTASIA, LOCATÁRIO, VALOR, INÍCIO, FIM, REAJUSTE, R$ M² LOC). Imóveis com o mesmo endereço de um já cadastrado são{' '}
+          Envie a planilha no formato "Lista Geral de Imóveis" (colunas: ENDEREÇO, PASTA, KMZ, ESTADO, CIDADE ou MUNICÍPIO, BAIRRO, OPERAÇÃO,
+          SEGMENTO, PROPRIETÁRIOS, TIPO, Valor Contábil, Valor de Mercado, STATUS, MATRÍCULA / ZONA, INSC. IPTU, ÁREA TERRENO, ÁREA CONSTRUÍDA,
+          NOME DE FANTASIA, LOCATÁRIO, VALOR, INÍCIO, FIM, REAJUSTE, R$ M² LOC). Imóveis com o mesmo endereço de um já cadastrado são{' '}
           <strong>atualizados</strong>, não duplicados — KMZ, fotos, anexos e comparativo de mercado que você já cadastrou ficam preservados.
         </p>
       </div>

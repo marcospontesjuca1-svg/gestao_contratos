@@ -28,7 +28,7 @@ o schema atual — hoje só guardamos a locação vigente.
 | `kmzUrl` | string \| null | `KMZ` (vazia na planilha) | URL do arquivo KMZ (Storage) ou link do Google Earth |
 | `coordenadas` | `{ lat: number, lng: number } \| null` | — (novo) | Preenchido manualmente ou extraído do KMZ |
 | `estado` | string \| null | `ESTADO` (vazia) | UF. Pré-preenchido via parser de endereço na importação, revisar manualmente |
-| `municipio` | string \| null | `MUNICÍPIO` (vazia) | Pré-preenchido via parser de endereço (best-effort) |
+| `municipio` | string \| null | `CIDADE` ou `MUNICÍPIO` | Aceita as duas colunas (algumas versões da planilha usam "CIDADE"); só cai no parser best-effort do endereço se nenhuma das duas vier preenchida |
 | `bairro` | string \| null | `BAIRRO` (vazia) | Idem — poucos endereços trazem bairro explícito |
 | `enderecoRevisado` | boolean | — (novo) | `false` quando estado/município/bairro vieram do parser automático; UI sinaliza "revisar" |
 | `operacao` | `'VENDA' \| 'LOCACAO' \| 'DESENVOLVIMENTO'` | `OPERAÇÃO` (quase toda vazia, 4 = "VENDA") | Default `'LOCACAO'` quando vazio. "Uso interno" não é uma operação — fica registrado em `status = 'ATIVO_INTERNO'` |
