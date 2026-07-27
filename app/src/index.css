@@ -14,3 +14,18 @@ body {
     @apply w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm;
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .memoria-impressao,
+  .memoria-impressao * {
+    visibility: visible;
+  }
+  .memoria-impressao {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+}

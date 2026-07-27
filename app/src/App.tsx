@@ -7,6 +7,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { ImoveisListPage } from './pages/ImoveisListPage'
 import { ImovelDetalhePage } from './pages/ImovelDetalhePage'
 import { ImovelFormPage } from './pages/ImovelFormPage'
+import { ReajusteContratualPage } from './pages/ReajusteContratualPage'
 import { ImportacaoPage } from './pages/ImportacaoPage'
 import { ConfiguracoesLayout } from './pages/ConfiguracoesLayout'
 import { ConfiguracoesBackupPage } from './pages/ConfiguracoesBackupPage'
@@ -41,6 +42,14 @@ export default function App() {
               element={
                 <ProtectedRoute perfisPermitidos={['admin']}>
                   <ImovelFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reajuste"
+              element={
+                <ProtectedRoute perfisPermitidos={['admin']}>
+                  <ReajusteContratualPage />
                 </ProtectedRoute>
               }
             />

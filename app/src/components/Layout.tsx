@@ -23,6 +23,14 @@ function IconImoveis() {
   )
 }
 
+function IconReajuste() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.75} stroke="currentColor" className="h-4 w-4 shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3" />
+    </svg>
+  )
+}
+
 function IconConfig() {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.75} stroke="currentColor" className="h-4 w-4 shrink-0">
@@ -54,6 +62,12 @@ export function Layout() {
             <IconImoveis />
             Imóveis
           </NavLink>
+          {isAdmin && (
+            <NavLink to="/reajuste" className={linkClasse}>
+              <IconReajuste />
+              Reajuste Contratual
+            </NavLink>
+          )}
           {isAdmin && (
             <NavLink to="/configuracoes" className={linkClasse}>
               <IconConfig />
