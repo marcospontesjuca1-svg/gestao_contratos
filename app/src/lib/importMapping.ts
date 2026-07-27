@@ -17,8 +17,8 @@ export const COLUNAS_ESPERADAS = [
   'SEGMENTO',
   'PROPRIETÁRIOS',
   'TIPO',
-  'Valor Contábil',
-  'Valor de Mercado',
+  'VALOR CONTÁBIL',
+  'VALOR DE MERCADO',
   'STATUS',
   'MATRÍCULA / ZONA',
   'INSC. IPTU',
@@ -36,6 +36,19 @@ export const COLUNAS_ESPERADAS = [
 export interface LinhaImportada {
   imovel: ImovelInput
   avisos: string[]
+}
+
+/**
+ * Normaliza as chaves da linha (maiúsculas, sem espaços nas pontas) para
+ * casar com COLUNAS_ESPERADAS mesmo que a planilha use "Cidade", " CIDADE "
+ * etc. em vez de "CIDADE" exatamente.
+ */
+function normalizarChaves(linha: Record<string, unknown>): Record<string, unknown> {
+  const normalizada: Record<string, unknown> = {}
+  for (const [chave, valor] of Object.entries(linha)) {
+    normalizada[chave.trim().toUpperCase()] = valor
+  }
+  return normalizada
 }
 
 function textoOuNull(v: unknown): string | null {
@@ -99,7 +112,8 @@ export function extrairLocalizacaoDoEndereco(endereco: string): { municipio: str
 }
 
 /** Converte uma linha bruta da planilha (objeto com as chaves de COLUNAS_ESPERADAS) em um ImovelInput. */
-export function mapearLinha(linha: Record<string, unknown>): LinhaImportada {
+export function mapearLinha(linhaBruta: Record<string, unknown>): LinhaImportada {
+  const linha = normalizarChaves(linhaBruta)
   const avisos: string[] = []
 
   const endereco = textoOuNull(linha['ENDEREÇO']) ?? ''
@@ -148,8 +162,8 @@ export function mapearLinha(linha: Record<string, unknown>): LinhaImportada {
     proprietario: textoOuNull(linha['PROPRIETÁRIOS']),
     tipo,
 
-    valorContabil: numeroOuNull(linha['Valor Contábil']),
-    valorMercadoImovel: numeroOuNull(linha['Valor de Mercado']),
+    valorContabil: numeroOuNull(linha['VALOR CONTÁBIL']),
+    valorMercadoImovel: numeroOuNull(linha['VALOR DE MERCADO']),
 
     status,
 
