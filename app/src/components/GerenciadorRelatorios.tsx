@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { baixarRelatorioXlsx, CAMPOS_RELATORIO, GRUPOS_RELATORIO } from '../lib/relatorio'
+import { CAMPOS_RELATORIO, GRUPOS_RELATORIO } from '../lib/relatorio'
 import type { Imovel } from '../types/imovel'
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 
 export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onSalvar, onVoltar }: Props) {
   const [salvo, setSalvo] = useState(false)
-  const [gerando, setGerando] = useState(false)
 
   function alternar(chave: string) {
     setSalvo(false)
@@ -22,15 +21,6 @@ export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onSalva
   function handleSalvar() {
     onSalvar()
     setSalvo(true)
-  }
-
-  async function handleBaixar() {
-    setGerando(true)
-    try {
-      await baixarRelatorioXlsx(imoveis, selecionadas)
-    } finally {
-      setGerando(false)
-    }
   }
 
   return (
@@ -75,16 +65,9 @@ export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onSalva
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
-          onClick={handleBaixar}
-          disabled={selecionadas.length === 0 || gerando}
-          className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-        >
-          {gerando ? 'Gerando…' : 'Baixar relatório (.xlsx)'}
-        </button>
-        <button
           onClick={handleSalvar}
           disabled={selecionadas.length === 0}
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
         >
           Salvar como padrão
         </button>
