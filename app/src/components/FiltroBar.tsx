@@ -1,17 +1,31 @@
-import type { FiltrosImoveis, StatusImovel } from '../types/imovel'
-
-const STATUS_OPCOES: StatusImovel[] = ['LOCADO', 'VAGO', 'ATIVO_INTERNO', 'LOCADO_PARCIAL']
+import { CAMPOS_RELATORIO } from '../lib/relatorio'
+import type { FiltrosImoveis } from '../types/imovel'
 
 interface Props {
   filtros: FiltrosImoveis
   onChange: (filtros: FiltrosImoveis) => void
-  opcoes: { estados: string[]; municipios: string[]; bairros: string[]; tipos: string[] }
+  opcoes: Record<string, string[]>
+  /** Chaves das colunas atualmente ativas na tela (padrão salvo no Gerador de Relatórios) — define quais filtros aparecem. */
+  colunas: string[]
 }
 
-export function FiltroBar({ filtros, onChange, opcoes }: Props) {
-  function set<K extends keyof FiltrosImoveis>(campo: K, valor: FiltrosImoveis[K]) {
-    onChange({ ...filtros, [campo]: valor || undefined })
+export function FiltroBar({ filtros, onChange, opcoes, colunas }: Props) {
+  function setCampo(chave: string, valor: string) {
+    const campos = { ...filtros.campos }
+    if (valor) campos[chave] = valor
+    else delete campos[chave]
+    onChange({ ...filtros, campos })
   }
+
+  function setTexto(valor: string) {
+    onChange({ ...filtros, texto: valor || undefined })
+  }
+
+  function setValor(campo: 'valorMin' | 'valorMax', valor: string) {
+    onChange({ ...filtros, [campo]: valor ? Number(valor) : undefined })
+  }
+
+  const camposFiltraveis = CAMPOS_RELATORIO.filter((c) => c.filtravel && colunas.includes(c.chave))
 
   return (
     <div className="grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-white shadow-sm p-4 md:grid-cols-4 lg:grid-cols-7">
@@ -19,27 +33,31 @@ export function FiltroBar({ filtros, onChange, opcoes }: Props) {
         className="col-span-2 rounded-md border border-slate-300 px-2 py-1.5 text-sm lg:col-span-2"
         placeholder="Buscar endereço, proprietário…"
         value={filtros.texto ?? ''}
-        onChange={(e) => set('texto', e.target.value)}
+        onChange={(e) => setTexto(e.target.value)}
       />
-      <Select label="Estado" valor={filtros.estado} opcoes={opcoes.estados} onChange={(v) => set('estado', v)} />
-      <Select label="Município" valor={filtros.municipio} opcoes={opcoes.municipios} onChange={(v) => set('municipio', v)} />
-      <Select label="Bairro" valor={filtros.bairro} opcoes={opcoes.bairros} onChange={(v) => set('bairro', v)} />
-      <Select label="Tipo" valor={filtros.tipo} opcoes={opcoes.tipos} onChange={(v) => set('tipo', v)} />
-      <Select label="Situação" valor={filtros.status} opcoes={STATUS_OPCOES} onChange={(v) => set('status', v as StatusImovel)} />
+      {camposFiltraveis.map((campo) => (
+        <Select
+          key={campo.chave}
+          label={campo.rotulo}
+          valor={filtros.campos[campo.chave]}
+          opcoes={opcoes[campo.chave] ?? []}
+          onChange={(v) => setCampo(campo.chave, v)}
+        />
+      ))}
       <div className="flex gap-1">
         <input
           type="number"
           className="w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm"
           placeholder="R$ min"
           value={filtros.valorMin ?? ''}
-          onChange={(e) => set('valorMin', e.target.value ? Number(e.target.value) : undefined)}
+          onChange={(e) => setValor('valorMin', e.target.value)}
         />
         <input
           type="number"
           className="w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm"
           placeholder="R$ max"
           value={filtros.valorMax ?? ''}
-          onChange={(e) => set('valorMax', e.target.value ? Number(e.target.value) : undefined)}
+          onChange={(e) => setValor('valorMax', e.target.value)}
         />
       </div>
     </div>

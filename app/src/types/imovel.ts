@@ -86,12 +86,8 @@ export type ImovelInput = Omit<Imovel, 'id' | 'criadoEm' | 'atualizadoEm' | 'cri
 
 export interface FiltrosImoveis {
   texto?: string
-  estado?: string
-  municipio?: string
-  bairro?: string
-  tipo?: string
-  status?: StatusImovel
-  segmento?: Segmento
   valorMin?: number
   valorMax?: number
+  /** Filtros dinâmicos por coluna do relatório (chave = CampoRelatorio.chave, valor = texto exato exibido na coluna). */
+  campos: Record<string, string>
 }

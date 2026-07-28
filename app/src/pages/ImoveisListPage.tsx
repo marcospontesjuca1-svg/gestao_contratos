@@ -4,21 +4,22 @@ import { aplicarFiltros, escutarImoveis, opcoesDeFiltro } from '../services/imov
 import { FiltroBar } from '../components/FiltroBar'
 import { ImoveisTable } from '../components/ImoveisTable'
 import { GerenciadorRelatorios } from '../components/GerenciadorRelatorios'
-import { carregarColunasSalvas, salvarColunas } from '../lib/relatorio'
+import { baixarRelatorioXlsx, carregarColunasSalvas, salvarColunas } from '../lib/relatorio'
 import { useAuth } from '../lib/auth'
 import type { FiltrosImoveis, Imovel } from '../types/imovel'
 
 export function ImoveisListPage() {
   const { perfil } = useAuth()
   const [todos, setTodos] = useState<Imovel[]>([])
-  const [filtros, setFiltros] = useState<FiltrosImoveis>({})
+  const [filtros, setFiltros] = useState<FiltrosImoveis>({ campos: {} })
   const [carregando, setCarregando] = useState(true)
   const [mostrarRelatorio, setMostrarRelatorio] = useState(false)
   const [colunasSalvas, setColunasSalvas] = useState<string[]>(carregarColunasSalvas)
   const [colunasEdicao, setColunasEdicao] = useState<string[]>(colunasSalvas)
+  const [gerandoRelatorio, setGerandoRelatorio] = useState(false)
 
   useEffect(() => {
-    return escutarImoveis({}, (todosImoveis) => {
+    return escutarImoveis({ campos: {} }, (todosImoveis) => {
       setTodos(todosImoveis)
       setCarregando(false)
     })
@@ -37,6 +38,15 @@ export function ImoveisListPage() {
     setColunasSalvas(colunasEdicao)
   }
 
+  async function handleBaixarRelatorio() {
+    setGerandoRelatorio(true)
+    try {
+      await baixarRelatorioXlsx(imoveis, colunasSalvas)
+    } finally {
+      setGerandoRelatorio(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -46,9 +56,18 @@ export function ImoveisListPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           {!mostrarRelatorio && (
-            <button onClick={abrirRelatorio} className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-              Gerador de Relatórios
-            </button>
+            <>
+              <button
+                onClick={handleBaixarRelatorio}
+                disabled={gerandoRelatorio}
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              >
+                {gerandoRelatorio ? 'Gerando…' : 'Baixar relatório (.xlsx)'}
+              </button>
+              <button onClick={abrirRelatorio} className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                Gerador de Relatórios
+              </button>
+            </>
           )}
           {perfil === 'admin' && (
             <Link to="/imoveis/novo" className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700">
@@ -58,7 +77,7 @@ export function ImoveisListPage() {
         </div>
       </div>
 
-      {!mostrarRelatorio && <FiltroBar filtros={filtros} onChange={setFiltros} opcoes={opcoes} />}
+      {!mostrarRelatorio && <FiltroBar filtros={filtros} onChange={setFiltros} opcoes={opcoes} colunas={colunasSalvas} />}
 
       {mostrarRelatorio && (
         <GerenciadorRelatorios

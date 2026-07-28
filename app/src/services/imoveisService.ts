@@ -13,6 +13,7 @@ import {
   type Unsubscribe,
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { CAMPOS_RELATORIO } from '../lib/relatorio'
 import type { FiltrosImoveis, Imovel, ImovelInput } from '../types/imovel'
 
 const COLECAO = 'imoveis'
@@ -38,13 +39,13 @@ export function escutarImoveis(filtros: FiltrosImoveis, callback: (imoveis: Imov
 }
 
 export function aplicarFiltros(imoveis: Imovel[], filtros: FiltrosImoveis): Imovel[] {
+  const camposAtivos = Object.entries(filtros.campos ?? {}).filter(([, valor]) => valor)
+
   return imoveis.filter((imovel) => {
-    if (filtros.estado && imovel.estado !== filtros.estado) return false
-    if (filtros.municipio && imovel.municipio !== filtros.municipio) return false
-    if (filtros.bairro && imovel.bairro !== filtros.bairro) return false
-    if (filtros.tipo && imovel.tipo !== filtros.tipo) return false
-    if (filtros.status && imovel.status !== filtros.status) return false
-    if (filtros.segmento && imovel.segmento !== filtros.segmento) return false
+    for (const [chave, valor] of camposAtivos) {
+      const campo = CAMPOS_RELATORIO.find((c) => c.chave === chave)
+      if (campo && String(campo.obter(imovel)) !== valor) return false
+    }
 
     const valorReferencia = imovel.locacao.valorAluguel ?? imovel.valorMercadoImovel ?? null
     if (filtros.valorMin != null && (valorReferencia == null || valorReferencia < filtros.valorMin)) return false
@@ -92,15 +93,15 @@ export async function removerImovel(id: string): Promise<void> {
   await deleteDoc(doc(db, COLECAO, id))
 }
 
-/** Extrai valores distintos já cadastrados para popular os selects de filtro. */
-export function opcoesDeFiltro(imoveis: Imovel[]) {
-  const coletar = (fn: (i: Imovel) => string | null) =>
-    Array.from(new Set(imoveis.map(fn).filter((v): v is string => !!v))).sort()
-
-  return {
-    estados: coletar((i) => i.estado),
-    municipios: coletar((i) => i.municipio),
-    bairros: coletar((i) => i.bairro),
-    tipos: coletar((i) => i.tipo),
+/**
+ * Extrai valores distintos já cadastrados para popular os selects de filtro, um
+ * conjunto de opções por chave de CampoRelatorio marcado como filtravel.
+ */
+export function opcoesDeFiltro(imoveis: Imovel[]): Record<string, string[]> {
+  const opcoes: Record<string, string[]> = {}
+  for (const campo of CAMPOS_RELATORIO) {
+    if (!campo.filtravel) continue
+    opcoes[campo.chave] = Array.from(new Set(imoveis.map((i) => String(campo.obter(i))).filter((v) => v))).sort()
   }
+  return opcoes
 }

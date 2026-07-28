@@ -11,20 +11,22 @@ export interface CampoRelatorio {
   rotulo: string
   grupo: string
   obter: (imovel: Imovel) => string | number
+  /** Campos adequados a um select de filtro (poucos valores distintos esperados) na tela de Imóveis. */
+  filtravel?: boolean
 }
 
 export const CAMPOS_RELATORIO: CampoRelatorio[] = [
   { chave: 'endereco', rotulo: 'Endereço', grupo: 'Identificação', obter: (i) => i.endereco },
-  { chave: 'estado', rotulo: 'Estado', grupo: 'Identificação', obter: (i) => i.estado ?? '' },
-  { chave: 'municipio', rotulo: 'Município', grupo: 'Identificação', obter: (i) => i.municipio ?? '' },
-  { chave: 'bairro', rotulo: 'Bairro', grupo: 'Identificação', obter: (i) => i.bairro ?? '' },
-  { chave: 'proprietario', rotulo: 'Proprietário', grupo: 'Identificação', obter: (i) => i.proprietario ?? '' },
-  { chave: 'nomeFantasia', rotulo: 'Nome fantasia', grupo: 'Identificação', obter: (i) => i.nomeFantasia ?? '' },
+  { chave: 'estado', rotulo: 'Estado', grupo: 'Identificação', obter: (i) => i.estado ?? '', filtravel: true },
+  { chave: 'municipio', rotulo: 'Município', grupo: 'Identificação', obter: (i) => i.municipio ?? '', filtravel: true },
+  { chave: 'bairro', rotulo: 'Bairro', grupo: 'Identificação', obter: (i) => i.bairro ?? '', filtravel: true },
+  { chave: 'proprietario', rotulo: 'Proprietário', grupo: 'Identificação', obter: (i) => i.proprietario ?? '', filtravel: true },
+  { chave: 'nomeFantasia', rotulo: 'Nome fantasia', grupo: 'Identificação', obter: (i) => i.nomeFantasia ?? '', filtravel: true },
 
-  { chave: 'tipo', rotulo: 'Tipo', grupo: 'Classificação', obter: (i) => i.tipo },
-  { chave: 'segmento', rotulo: 'Segmento', grupo: 'Classificação', obter: (i) => i.segmento ?? '' },
-  { chave: 'status', rotulo: 'Situação', grupo: 'Classificação', obter: (i) => i.status },
-  { chave: 'operacao', rotulo: 'Operação', grupo: 'Classificação', obter: (i) => i.operacao },
+  { chave: 'tipo', rotulo: 'Tipo', grupo: 'Classificação', obter: (i) => i.tipo, filtravel: true },
+  { chave: 'segmento', rotulo: 'Segmento', grupo: 'Classificação', obter: (i) => i.segmento ?? '', filtravel: true },
+  { chave: 'status', rotulo: 'Situação', grupo: 'Classificação', obter: (i) => i.status, filtravel: true },
+  { chave: 'operacao', rotulo: 'Operação', grupo: 'Classificação', obter: (i) => i.operacao, filtravel: true },
 
   { chave: 'matriculaZona', rotulo: 'Matrícula / Zona', grupo: 'Documentação', obter: (i) => i.matriculaZona ?? '' },
   { chave: 'inscricaoIptu', rotulo: 'Inscrição IPTU', grupo: 'Documentação', obter: (i) => i.inscricaoIptu ?? '' },
@@ -36,11 +38,11 @@ export const CAMPOS_RELATORIO: CampoRelatorio[] = [
   { chave: 'valorContabil', rotulo: 'Valor contábil', grupo: 'Áreas e valores', obter: (i) => formatarMoeda(i.valorContabil) },
   { chave: 'valorMercadoImovel', rotulo: 'Valor de mercado (imóvel)', grupo: 'Áreas e valores', obter: (i) => formatarMoeda(i.valorMercadoImovel) },
 
-  { chave: 'locatario', rotulo: 'Locatário', grupo: 'Locação', obter: (i) => i.locacao.locatario ?? '' },
+  { chave: 'locatario', rotulo: 'Locatário', grupo: 'Locação', obter: (i) => i.locacao.locatario ?? '', filtravel: true },
   { chave: 'valorAluguel', rotulo: 'Valor do aluguel', grupo: 'Locação', obter: (i) => formatarMoeda(i.locacao.valorAluguel) },
   { chave: 'dataInicio', rotulo: 'Início do contrato', grupo: 'Locação', obter: (i) => formatadorData(i.locacao.dataInicio) },
   { chave: 'dataFim', rotulo: 'Fim do contrato', grupo: 'Locação', obter: (i) => formatadorData(i.locacao.dataFim) },
-  { chave: 'reajuste', rotulo: 'Reajuste', grupo: 'Locação', obter: (i) => i.locacao.reajuste ?? '' },
+  { chave: 'reajuste', rotulo: 'Reajuste', grupo: 'Locação', obter: (i) => i.locacao.reajuste ?? '', filtravel: true },
   { chave: 'valorM2', rotulo: 'R$/m² do imóvel', grupo: 'Locação', obter: (i) => formatarMoeda(i.locacao.valorM2) },
 
   { chave: 'valorM2Regiao', rotulo: 'R$/m² de mercado (região)', grupo: 'Comparativo de mercado', obter: (i) => formatarMoeda(i.comparativoMercado.valorM2Regiao) },

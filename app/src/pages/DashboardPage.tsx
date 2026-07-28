@@ -73,7 +73,7 @@ export function DashboardPage() {
   const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
-    return escutarImoveis({}, (dados) => {
+    return escutarImoveis({ campos: {} }, (dados) => {
       setImoveis(dados)
       setCarregando(false)
     })

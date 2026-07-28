@@ -14,7 +14,7 @@ export function ReajusteContratualPage() {
   const [selecionado, setSelecionado] = useState<Imovel | null>(null)
 
   useEffect(() => {
-    return escutarImoveis({}, (dados) => {
+    return escutarImoveis({ campos: {} }, (dados) => {
       setImoveis(dados)
       setCarregando(false)
     })
