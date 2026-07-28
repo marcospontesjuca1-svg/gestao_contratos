@@ -40,7 +40,7 @@ export function ImovelDetalhePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link to="/imoveis" className="text-sm text-slate-500 hover:underline">
             ← Voltar
@@ -51,7 +51,7 @@ export function ImovelDetalhePage() {
           )}
         </div>
         {perfil === 'admin' && (
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-2">
             <Link to={`/imoveis/${id}/editar`} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
               Editar
             </Link>

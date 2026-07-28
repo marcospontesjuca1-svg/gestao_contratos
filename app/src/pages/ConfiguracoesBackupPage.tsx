@@ -29,7 +29,7 @@ export function ConfiguracoesBackupPage() {
     setGerando('xlsx')
     try {
       const imoveis = await listarImoveis()
-      baixarBackupXlsx(imoveis)
+      await baixarBackupXlsx(imoveis)
       await registrarExecucao()
     } finally {
       setGerando(null)

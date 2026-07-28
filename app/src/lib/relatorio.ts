@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx'
+import { gerarRelatorioExcel } from './excelReport'
 import type { Imovel } from '../types/imovel'
 
 const formatadorData = (ts: Imovel['locacao']['dataInicio']) => (ts ? ts.toDate().toLocaleDateString('pt-BR') : '')
@@ -70,14 +70,16 @@ export function salvarColunas(colunas: string[]): void {
 }
 
 /** Gera um .xlsx só com as colunas selecionadas, para os imóveis informados (já filtrados na tela), e dispara o download. */
-export function baixarRelatorioXlsx(imoveis: Imovel[], colunasSelecionadas: string[]): void {
+export async function baixarRelatorioXlsx(imoveis: Imovel[], colunasSelecionadas: string[]): Promise<void> {
   const campos = CAMPOS_RELATORIO.filter((c) => colunasSelecionadas.includes(c.chave))
-  const linhas = imoveis.map((imovel) => Object.fromEntries(campos.map((c) => [c.rotulo, c.obter(imovel)])))
+  const dataHoje = new Date().toLocaleDateString('pt-BR')
 
-  const planilha = XLSX.utils.json_to_sheet(linhas)
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, planilha, 'Relatório')
-
-  const dataHoje = new Date().toISOString().slice(0, 10)
-  XLSX.writeFile(workbook, `relatorio-imoveis-${dataHoje}.xlsx`)
+  await gerarRelatorioExcel({
+    nomeArquivo: `relatorio-imoveis-${new Date().toISOString().slice(0, 10)}`,
+    aba: 'Relatório',
+    titulo: 'GESTÃO DE ATIVOS',
+    subtitulo: `Relatório de imóveis — gerado em ${dataHoje} — ${imoveis.length} imóve${imoveis.length === 1 ? 'l' : 'is'}`,
+    colunas: campos.map((c) => c.rotulo),
+    linhas: imoveis.map((imovel) => campos.map((c) => c.obter(imovel))),
+  })
 }

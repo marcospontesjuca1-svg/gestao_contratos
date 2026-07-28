@@ -54,7 +54,7 @@ export function UsuariosPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
         {carregando ? (
           <p className="p-4 text-sm text-slate-400">Carregando…</p>
         ) : (
@@ -99,7 +99,7 @@ export function UsuariosPage() {
       <form onSubmit={handleCriar} className="space-y-3 rounded-xl border border-slate-200 bg-white shadow-sm p-4">
         <h3 className="text-sm font-semibold text-slate-900">Criar novo usuário</h3>
         <p className="text-xs text-slate-500">Cria o login e o perfil de acesso de uma vez, direto por aqui.</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <input required placeholder="Nome" className="input" value={novo.nome} onChange={(e) => setNovo({ ...novo, nome: e.target.value })} />
           <input required type="email" placeholder="E-mail" className="input" value={novo.email} onChange={(e) => setNovo({ ...novo, email: e.target.value })} />
           <input

@@ -12,6 +12,7 @@ interface Props {
 
 export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onSalvar, onVoltar }: Props) {
   const [salvo, setSalvo] = useState(false)
+  const [gerando, setGerando] = useState(false)
 
   function alternar(chave: string) {
     setSalvo(false)
@@ -21,6 +22,15 @@ export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onSalva
   function handleSalvar() {
     onSalvar()
     setSalvo(true)
+  }
+
+  async function handleBaixar() {
+    setGerando(true)
+    try {
+      await baixarRelatorioXlsx(imoveis, selecionadas)
+    } finally {
+      setGerando(false)
+    }
   }
 
   return (
@@ -65,11 +75,11 @@ export function GerenciadorRelatorios({ imoveis, selecionadas, onChange, onSalva
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
-          onClick={() => baixarRelatorioXlsx(imoveis, selecionadas)}
-          disabled={selecionadas.length === 0}
+          onClick={handleBaixar}
+          disabled={selecionadas.length === 0 || gerando}
           className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
         >
-          Baixar relatório (.xlsx)
+          {gerando ? 'Gerando…' : 'Baixar relatório (.xlsx)'}
         </button>
         <button
           onClick={handleSalvar}

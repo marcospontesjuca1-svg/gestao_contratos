@@ -278,7 +278,7 @@ function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <fieldset className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
       <legend className="px-1 text-sm font-semibold text-slate-900">{titulo}</legend>
-      <div className="mt-2 grid grid-cols-2 gap-4">{children}</div>
+      <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
     </fieldset>
   )
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { Logo } from './Logo'
@@ -44,55 +45,90 @@ function IconConfig() {
   )
 }
 
+function IconMenu() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  )
+}
+
+function IconFechar() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  )
+}
+
 export function Layout() {
   const { usuario, perfil, logout } = useAuth()
   const isAdmin = perfil === 'admin'
+  const [menuAberto, setMenuAberto] = useState(false)
+  const fecharMenu = () => setMenuAberto(false)
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <aside className="w-60 shrink-0 border-r border-slate-200 bg-white p-4">
-        <Logo className="mb-6" />
+      {menuAberto && <div className="fixed inset-0 z-40 bg-slate-900/50 md:hidden" onClick={fecharMenu} />}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-slate-200 bg-white p-4 transition-transform duration-200 md:static md:z-auto md:w-60 md:shrink-0 md:translate-x-0 ${
+          menuAberto ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="mb-6 flex items-center justify-between">
+          <Logo />
+          <button onClick={fecharMenu} className="text-slate-400 hover:text-slate-700 md:hidden">
+            <IconFechar />
+          </button>
+        </div>
         <p className="mb-4 text-xs font-medium uppercase tracking-wide text-slate-400">Gestão de Ativos</p>
         <nav className="space-y-1">
-          <NavLink to="/" end className={linkClasse}>
+          <NavLink to="/" end className={linkClasse} onClick={fecharMenu}>
             <IconPainel />
             Painel Gerencial
           </NavLink>
-          <NavLink to="/imoveis" className={linkClasse}>
+          <NavLink to="/imoveis" className={linkClasse} onClick={fecharMenu}>
             <IconImoveis />
             Imóveis
           </NavLink>
           {isAdmin && (
-            <NavLink to="/reajuste" className={linkClasse}>
+            <NavLink to="/reajuste" className={linkClasse} onClick={fecharMenu}>
               <IconReajuste />
               Reajuste Contratual
             </NavLink>
           )}
           {isAdmin && (
-            <NavLink to="/configuracoes" className={linkClasse}>
+            <NavLink to="/configuracoes" className={linkClasse} onClick={fecharMenu}>
               <IconConfig />
               Configurações
             </NavLink>
           )}
         </nav>
       </aside>
-      <div className="flex flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3 shadow-sm">
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <span className="font-medium text-slate-900">{usuario?.nome}</span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                perfil === 'admin' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'
-              }`}
-            >
-              {perfil}
-            </span>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-3 shadow-sm md:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <button onClick={() => setMenuAberto(true)} className="text-slate-500 hover:text-slate-900 md:hidden">
+              <IconMenu />
+            </button>
+            <div className="flex min-w-0 items-center gap-2 text-sm text-slate-600">
+              <span className="truncate font-medium text-slate-900">{usuario?.nome}</span>
+              <span
+                className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                  perfil === 'admin' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                {perfil}
+              </span>
+            </div>
           </div>
-          <button onClick={() => logout()} className="text-sm font-medium text-slate-500 hover:text-red-600">
+          <button onClick={() => logout()} className="shrink-0 text-sm font-medium text-slate-500 hover:text-red-600">
             Sair
           </button>
         </header>
-        <main className="flex-1 p-6">
+        <main className="min-w-0 flex-1 overflow-x-auto p-4 md:p-6">
           <Outlet />
         </main>
       </div>

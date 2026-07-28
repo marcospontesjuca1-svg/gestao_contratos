@@ -82,7 +82,7 @@ export function MemoriaCalculoReajuste({ imovel, onFechar, onSalvo }: { imovel: 
 
   return (
     <div className="memoria-impressao fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 print:static print:bg-white print:p-0">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl print:max-h-none print:overflow-visible print:shadow-none">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-4 shadow-xl sm:p-6 print:max-h-none print:overflow-visible print:shadow-none">
         <div className="mb-4 flex items-start justify-between print:hidden">
           <div>
             <h3 className="text-lg font-semibold text-slate-900">Reajuste contratual</h3>
@@ -93,7 +93,7 @@ export function MemoriaCalculoReajuste({ imovel, onFechar, onSalvo }: { imovel: 
           </button>
         </div>
 
-        <div className="mb-4 grid grid-cols-3 gap-3 print:hidden">
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 print:hidden">
           <label className="text-sm">
             <span className="mb-1 block text-xs uppercase tracking-wide text-slate-400">Mês do reajuste</span>
             <select className="input" value={mes} onChange={(e) => setMes(Number(e.target.value))}>
