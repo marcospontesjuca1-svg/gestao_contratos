@@ -7,6 +7,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { ImoveisListPage } from './pages/ImoveisListPage'
 import { ImovelDetalhePage } from './pages/ImovelDetalhePage'
 import { ImovelFormPage } from './pages/ImovelFormPage'
+import { ManutencaoImovelPage } from './pages/ManutencaoImovelPage'
 import { ReajusteContratualPage } from './pages/ReajusteContratualPage'
 import { ImportacaoPage } from './pages/ImportacaoPage'
 import { ConfiguracoesLayout } from './pages/ConfiguracoesLayout'
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/imoveis" element={<ImoveisListPage />} />
             <Route path="/imoveis/:id" element={<ImovelDetalhePage />} />
+            <Route path="/imoveis/:id/manutencao" element={<ManutencaoImovelPage />} />
             <Route
               path="/imoveis/novo"
               element={

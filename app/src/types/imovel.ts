@@ -84,6 +84,18 @@ export interface Imovel {
 /** Payload usado pelos formulários/serviços antes de virar um Imovel persistido. */
 export type ImovelInput = Omit<Imovel, 'id' | 'criadoEm' | 'atualizadoEm' | 'criadoPor' | 'atualizadoPor'>
 
+export interface RegistroManutencao {
+  id: string
+  data: Timestamp
+  tempoExecucao: string | null
+  valor: number | null
+  detalhamento: string
+  criadoEm: Timestamp | null
+  criadoPor: string | null
+}
+
+export type RegistroManutencaoInput = Omit<RegistroManutencao, 'id' | 'criadoEm' | 'criadoPor'>
+
 export interface FiltrosImoveis {
   texto?: string
   valorMin?: number

@@ -28,6 +28,12 @@ service cloud.firestore {
     match /imoveis/{imovelId} {
       allow read: if usuarioAtivo();
       allow create, update, delete: if ehAdmin();
+
+      // manutencoes: diário de manutenção do imóvel — leitura para usuários ativos, escrita só admin.
+      match /manutencoes/{manutencaoId} {
+        allow read: if usuarioAtivo();
+        allow create, update, delete: if ehAdmin();
+      }
     }
 
     // usuarios: qualquer usuário ativo lê o próprio perfil; só admin lê/gerencia todos.

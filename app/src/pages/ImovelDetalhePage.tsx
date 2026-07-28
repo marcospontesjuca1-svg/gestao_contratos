@@ -50,16 +50,21 @@ export function ImovelDetalhePage() {
             <p className="text-xs font-medium text-amber-700">Endereço/localização inferidos automaticamente na importação — revisar.</p>
           )}
         </div>
-        {perfil === 'admin' && (
-          <div className="flex shrink-0 gap-2">
-            <Link to={`/imoveis/${id}/editar`} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
-              Editar
-            </Link>
-            <button onClick={handleExcluir} className="rounded-md border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50">
-              Excluir
-            </button>
-          </div>
-        )}
+        <div className="flex shrink-0 gap-2">
+          <Link to={`/imoveis/${id}/manutencao`} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
+            Manutenção
+          </Link>
+          {perfil === 'admin' && (
+            <>
+              <Link to={`/imoveis/${id}/editar`} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
+                Editar
+              </Link>
+              <button onClick={handleExcluir} className="rounded-md border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50">
+                Excluir
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <section className="grid grid-cols-2 gap-4 rounded-xl border border-slate-200 bg-white shadow-sm p-4 md:grid-cols-4">
